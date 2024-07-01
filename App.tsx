@@ -1,118 +1,172 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import * as React from 'react';
+import {Image, StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {Provider as PaperProvider} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {FontAwesome5, Ionicons} from '@expo/vector-icons';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import HomeScreen from './screens/HomeScreen';
+import MoreScreen from './screens/MoreScreen';
+import LoansScreen from './screens/LoansScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import PaymentOptions from './screens/PaymentOptions';
+import Welcome from './screens/Welcome';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import Education from './screens/programs/Education';
+import Car from './screens/programs/Car';
+import HomeLoan from './screens/programs/HomeLoan';
+import Business from './screens/programs/Business';
+import Professional from './screens/programs/Professional';
+import Salaried from './screens/programs/Salaried';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+import About from './screens/more/About';
+import Feedback from './screens/more/Feedback';
+import Help from './screens/more/Help';
+import Complaints from './screens/more/Complaints';
+import TermsAndConditions from './screens/more/TermsAndConditions';
+import PrivacyPolicy from './screens/more/PrivacyPolicy';
+
+import {useState, useEffect} from 'react';
+
+const Stack = createStackNavigator();
+const Tab = createMaterialBottomTabNavigator();
+
+interface TabIconProps {
+  color: string;
+  focused: boolean;
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function MyTabs() {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Tab.Navigator
+      initialRouteName="Home"
+      activeColor="#09e"
+      inactiveColor="#555"
+      labelStyle={{fontSize: 14}}
+      style={{backgroundColor: '#fff', fontWeight: 'bold'}}
+      screenOptions={{}}
+      activeIndicatorStyle={{
+        height: 42,
+        width: 42,
+        borderRadius: 50,
+        backgroundColor: '#dde',
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({color, focused}: TabIconProps) => (
+            <Ionicons
+              name={focused ? 'home' : 'home-outline'}
+              size={22}
+              color={color}
+            />
+          ),
+        }}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Tab.Screen
+        name="Payments"
+        component={PaymentScreen}
+        options={{
+          tabBarLabel: 'Payments',
+          tabBarIcon: ({color, focused}: TabIconProps) => (
+            <FontAwesome5
+              name={focused ? 'cc-amazon-pay' : 'amazon-pay'}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Loans"
+        component={LoansScreen}
+        options={{
+          tabBarLabel: 'Loan Programs',
+          tabBarIcon: ({color}: {color: string}) => (
+            <FontAwesome5 name="opencart" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="More"
+        component={MoreScreen}
+        options={{
+          tabBarLabel: 'More',
+          tabBarIcon: ({color}: {color: string}) => (
+            <Ionicons name="menu-outline" size={27} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+function HeaderLogo() {
+  return (
+    <Image
+      source={require('./assets/logopng.png')}
+      style={{width: 160, height: 60}}
+      resizeMode="contain"
+    />
+  );
+}
 
-export default App;
+function MyStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="root"
+      screenOptions={{
+        headerTitleAlign: 'center',
+        headerTintColor: 'white',
+        headerTitleStyle: {
+          fontWeight: '500',
+        },
+        headerStyle: {
+          backgroundColor: '#09f',
+        },
+      }}>
+      <Stack.Screen
+        name="root"
+        component={MyTabs}
+        options={{
+          headerTitle: () => <HeaderLogo />,
+        }}
+      />
+      <Stack.Screen
+        name="Welcome"
+        component={Welcome}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen name="PaymentOptions" component={PaymentOptions} />
+      <Stack.Screen name="About" component={About} />
+      <Stack.Screen name="Feedback" component={Feedback} />
+      <Stack.Screen name="Help" component={Help} />
+      <Stack.Screen name="Complaints" component={Complaints} />
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <Stack.Screen name="Education" component={Education} />
+      <Stack.Screen name="Car" component={Car} />
+      <Stack.Screen name="HomeLoan" component={HomeLoan} />
+      <Stack.Screen name="Business" component={Business} />
+      <Stack.Screen name="Professional" component={Professional} />
+      <Stack.Screen name="Salaried" component={Salaried} />
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <PaperProvider>
+      <NavigationContainer>
+        <MyStack />
+      </NavigationContainer>
+    </PaperProvider>
+  );
+}
